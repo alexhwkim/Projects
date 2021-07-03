@@ -64,20 +64,21 @@ auscity_tw_trends
 
 # ---- VISUALISATIONS ----
 # Time series analysis of the frequency of two tweets
-tweet_1 <- search_tweets("checkout" , n = 18000, include_rts = FALSE)
+tweet_1 <- search_tweets("supermarket" , n = 3000, include_rts = FALSE)
 
-graph <- ts_plot(tweet_1,  by = "days" , color = "blue")
+tweet1_graph <- ts_plot(tweet_1,  by = "days" , color = "blue")
 tweet_1 <- ts_data(tweet_1, by = 'days')
-names(tweet_1) <- c("time" , "checkout")
+names(tweet_1) <- c("time" , "supermarket")
 
-tweet_2 <- search_tweets("groceries" , n = 18000, include_rts = FALSE) 
-tweet_2 <- ts_data(tesla_st, by = 'days')
-names(tweet_2) <- c("time" , "groceries")
+tweet_2 <- search_tweets("grocer" , n = 3000, include_rts = FALSE) 
+tweet_2 <- ts_data(tweet_2, by = 'days')
+names(tweet_2) <- c("time" , "grocer")
 
-merged_df <- merge(tweet_2, camry_ts, by = "time" , all = TRUE)
+merged_df <- merge(tweet_2, tweet_1, by = "time" , all = TRUE)
 melt_df <- reshape::melt(merged_df, na.rm = TRUE, id.vars = "time")
-ggplot(data = melt_df, aes(x = time, y = value, col = variable)) 
-+ geom_line(lwd = 0.8)
+
+ggplot(data = melt_df, aes(x = time, y = value, col = variable)) + 
+  geom_line(lwd = 0.8)
 
 
 # Filter data from above for only twitter users with over 10k followers
