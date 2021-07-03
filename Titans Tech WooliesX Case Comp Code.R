@@ -216,5 +216,3 @@ ggplot(data = neg.pos.df, aes(x = Sentiment, y = sa.score,
                               fill = Sentiment)) + 
   geom_bar(stat = "identity") + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-
