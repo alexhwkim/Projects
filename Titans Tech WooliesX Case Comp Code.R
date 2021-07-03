@@ -54,11 +54,12 @@ influencer_tweets <- arrange(influencer_tweets, desc(follower))
 # Find twitter trends by city, or Australia as a whole
 auscity_tw_trends <-get_trends("Sydney")
 # Calculate total number of tweets
-aus_tw_trends <- aus_tw_trends %>% 
+auscity_tw_trends <- auscity_tw_trends %>% 
   group_by(trend) %>% 
   summarize(tweet_vol = mean(tweet_volume))
 # Sort tweets in descending order
-aus_tw_trends <- arrange(aus_tw_trends, desc(tweet_vol))
+auscity_tw_trends <- arrange(auscity_tw_trends, desc(tweet_vol))
+auscity_tw_trends
 
 
 # ---- VISUALISATIONS ----
