@@ -49,7 +49,7 @@ influencer_tweets <- inner_join(woolies_user_df, woolies_tweets,by="screen_name"
 influencer_tweets <- influencer_tweets %>% 
   select(screen_name, follower, friend, ratio, location, text)
 # Sort results by descending follower count
-influencer_tweets <- arrange(fixed_table, desc(follower))
+influencer_tweets <- arrange(influencer_tweets, desc(follower))
 
 # Find twitter trends by city, or Australia as a whole
 auscity_tw_trends <-get_trends("Sydney")
