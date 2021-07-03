@@ -64,13 +64,13 @@ auscity_tw_trends
 
 # ---- VISUALISATIONS ----
 # Time series analysis of the frequency of two tweets
-tweet_1 <- search_tweets("supermarket" , n = 3000, include_rts = FALSE)
+tweet_1 <- search_tweets("supermarket" , n = 18000, include_rts = FALSE)
 
 tweet1_graph <- ts_plot(tweet_1,  by = "days" , color = "blue")
 tweet_1 <- ts_data(tweet_1, by = 'days')
 names(tweet_1) <- c("time" , "supermarket")
 
-tweet_2 <- search_tweets("grocer" , n = 3000, include_rts = FALSE) 
+tweet_2 <- search_tweets("grocer" , n = 18000, include_rts = FALSE) 
 tweet_2 <- ts_data(tweet_2, by = 'days')
 names(tweet_2) <- c("time" , "grocer")
 
