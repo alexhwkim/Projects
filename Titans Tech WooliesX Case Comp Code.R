@@ -14,29 +14,33 @@ library(syuzhet)
 
 
 # Enter Twitter API Tokens
-# # Appname
-# appname <- "Titans Tech"
-# 
-# # API key
-# key <- "tjAnEPZAkAjh712YEU4ySdKcK"
-# 
-# # API Secret
-# secret <- "oCadnJdhwr1NVWRM1xyoajl5yf8XwZojL1TBgaNx1DNCfmEEx2"
-# 
-# twitter_token <- create_token(
-#   app = appname,
-#   consumer_key = key,
-#   consumer_secret = secret,
-#   access_token = "1406931689385848834-Htg0WpINI3iy3u30K6voyChipYl5cx",
-#   access_secret = "NG0nfeqglYQHSSwhGunCMZ5BHGPTzuDp8B9RtY17X42i9")
+# Appname
+appname <- "Titans Tech-Klaus"
+
+# API key
+key <- "tjAnEPZAkAjh712YEU4ySdKcK"
+
+# API Secret
+secret <- "oCadnJdhwr1NVWRM1xyoajl5yf8XwZojL1TBgaNx1DNCfmEEx2"
+
+twitter_token <- create_token(
+  app = appname,
+  consumer_key = key,
+  consumer_secret = secret,
+  access_token = "1406931689385848834-Htg0WpINI3iy3u30K6voyChipYl5cx",
+  access_secret = "NG0nfeqglYQHSSwhGunCMZ5BHGPTzuDp8B9RtY17X42i9")
 
 
 # ---- TWITTER DATA SCRAPING ----
 # Get tweets by Australians with specified search term
-woolies_tweets <- search_tweets("woolies", n = 18000, include_rts = FALSE, 
-                                lang = "en", location = lookup_coords(("Australia")))
-woolies_tweets <- woolies_tweets[woolies_tweets$followers_count>10000,]
+woolies_tweets <- search_tweets("woolies", n = 18000, include_rts = FALSE, lang = "en",
+                                country = "Australia")
+# Filter out accounts with 0 followers as bot removal
+woolies_tweets <- woolies_tweets[woolies_tweets$followers_count>0,]
 woolies_users <- users_data(woolies_tweets)
+# Filter out accounts created in the last 2 weeks as bot removal
+woolies_users <- woolies_users %>%
+  filter(woolies_users$account_created_at <= "2021-06-13")
 
 # Sort users by the Marketing golden ratio: following/follower ratio
 woolies_user_df <- woolies_users %>% 
@@ -50,6 +54,7 @@ influencer_tweets <- influencer_tweets %>%
   select(screen_name, follower, friend, ratio, location, text)
 # Sort results by descending follower count
 influencer_tweets <- arrange(influencer_tweets, desc(follower))
+influencer_tweets
 
 # Find twitter trends by city, or Australia as a whole
 auscity_tw_trends <-get_trends("Sydney")
@@ -164,7 +169,7 @@ vertex_attr(retweet_network)
 # Extracting actual twitter text
 # Search for tweets about lockdown, exclude retweets
 lock.twt <- search_tweets("lockdown", n = 18000, include_rts = F, lang = 'en',
-                          location=lookup_coords("Australia"))
+                          country = "Australia")
 
 # Create data frame with just text, makes it easy to read twitter text
 woolies_tweets_text <- lock.twt$text
