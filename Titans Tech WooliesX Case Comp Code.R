@@ -41,6 +41,12 @@ woolies_users <- users_data(woolies_tweets)
 # Filter out accounts created in the last 2 weeks as bot removal
 woolies_users <- woolies_users %>%
   filter(woolies_users$account_created_at <= "2021-06-13")
+# Filter tweets that are from individuals from Australians cities/town 
+aus_cities <- read.csv("auscities.csv")
+woolies_users <- subset(woolies_users, location == "Australia" |
+                          location %in% aus_cities$city |
+                          location %in% aus_cities$state)
+
 
 # Sort users by the Marketing golden ratio: following/follower ratio
 woolies_user_df <- woolies_users %>% 
@@ -167,9 +173,11 @@ plot(retweet_network, asp = 1,
 vertex_attr(retweet_network)
 
 # Extracting actual twitter text
-# Search for tweets about lockdown, exclude retweets
-lock.twt <- search_tweets("lockdown", n = 18000, include_rts = F, lang = 'en',
-                          country = "Australia")
+# Search for Australian tweets about lockdown, exclude retweets
+lock.twt <- search_tweets("lockdown", n = 18000, include_rts = F, lang = 'en')
+lock.twt <- subset(lock.twt, location == "Australia" |
+                        location %in% aus_cities$city |
+                        location %in% aus_cities$state)
 
 # Create data frame with just text, makes it easy to read twitter text
 woolies_tweets_text <- lock.twt$text
