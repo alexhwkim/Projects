@@ -33,8 +33,9 @@ twitter_token <- create_token(
 
 # ---- TWITTER DATA SCRAPING ----
 # Get tweets by Australians with specified search term
+# Paramter result_type can be changed to popular, recent or mixed
 woolies_tweets <- search_tweets("woolies", n = 18000, include_rts = FALSE, lang = "en",
-                                country = "Australia")
+                                country = "Australia", result_type = "recent")
 # Filter out accounts with 0 followers as bot removal
 woolies_tweets <- woolies_tweets[woolies_tweets$followers_count>0,]
 woolies_users <- users_data(woolies_tweets)
@@ -174,7 +175,7 @@ vertex_attr(retweet_network)
 
 # Extracting actual twitter text
 # Search for Australian tweets about lockdown, exclude retweets
-lock.twt <- search_tweets("lockdown", n = 18000, include_rts = F, lang = 'en')
+lock.twt <- search_tweets("lockdown", n = 18000, include_rts = F, lang = 'en',  result_type = "recent")
 lock.twt <- subset(lock.twt, location == "Australia" |
                         location %in% aus_cities$city |
                         location %in% aus_cities$state)
