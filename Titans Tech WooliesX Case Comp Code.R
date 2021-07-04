@@ -189,7 +189,7 @@ lock.twt <- search_tweets("lockdown", n = 18000, include_rts = F, lang = 'en')
 # Narrow down to Australian tweets
 lock.twt <- subset(lock.twt, location == "Australia" |
                         location %in% aus_cities$city |
-                        location %in% aus_cities$admin_name)
+                        location %in% aus_cities$state)
 
 
 # Sentiment analysis(sa): Looks at sentiment of lockdown tweets
