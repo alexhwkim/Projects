@@ -1,13 +1,13 @@
 # Titans Tech - WooliesX x UNSW Business Society Case Competition
 
----NOTE---
+NOTE
 Must enter Twitter API token credentials as well as Google geocoding API credentials to run the code. The connection setup to the API is in the first few lines.
 
----TWEET DATA SCRAPING---
+TWEET DATA SCRAPING
 Tweets with a desired key term are ingested and the user profiles of such tweeters are generated. These two information tables are joined to make a final table with relevant tweets, then sorted in descending order of followers and following/followers ratio.
 Next, a table of top current trending tweet terms is generated, used to check if any related search terms related to the brand are trending.
 
----VISUALISATIONS---
+VISUALISATIONS
 Frequency graph of two tweets
 A frequency line plot of two different search terms are compared by a metric of days, weeks or months.
 
