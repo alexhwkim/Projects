@@ -92,16 +92,24 @@ melt_df <- reshape::melt(merged_df, na.rm = TRUE, id.vars = "time")
 ggplot(data = melt_df, aes(x = time, y = value, col = variable)) + 
   geom_line(lwd = 0.8)
 
+# Search for tweets about woolies, retweets set to true
+wooliestwt <- search_tweets("woolies", n = 18000, include_rts = T)
 
-# Filter data from above for only twitter users with over 1k followers
-woolies_tweets_best <- woolies_tweets[woolies_tweets$followers_count > 1000,]
+# Narrow down wooliestwt geographically
+wooliestwt <- subset(wooliestwt, location == "Australia" |
+                       location %in% aus_cities$city |
+                       location %in% aus_cities$admin_name)
+
+# Filter further for only twitter users with over 10k followers
+wooliestwtbest <- wooliestwt[wooliestwt$followers_count > 10000,]
 
 # Create table of geographical locations of the tweets
 # Only within Australia
-woolies_tweets %>%
+wooliestwt %>%
   count(location, sort = TRUE) %>%
   mutate(location = reorder(location, n)) %>%
   top_n(20) %>%
+  filter(location != "Australia") %>%
   ggplot(aes(x = location, y = n)) +
   geom_col() +
   coord_flip() +
@@ -110,28 +118,29 @@ woolies_tweets %>%
        title = "Where Twitter users are from - unique locations ")
 
 # Geolocation data of tweets
-pol_coord <- lat_lng(woolies_tweets)
+pol_coord <- lat_lng(wooliestwt)
 # Omit NA values
 pol_geo <- na.omit(pol_coord[, c("lat", "lng")])
-# Plot a map of Australia with the tweet areas
+#plot a map of Australia with the tweet areas
 map(database = "world", regions = "Australia", fill = T, 
     col = "light yellow", bg = 'light blue')
 with(pol_coord, points(lng, lat, pch = 20, cex = 1, col = 'blue'))
 
 # Graph based data structure visualisations
 # Create data frame for the tweet network
-wtwt_df <- woolies_tweetsbest[, c("screen_name", "retweet_screen_name")]
+wtwt_df <- wooliestwtbest[, c("screen_name", "retweet_screen_name")]
 head(wtwt_df, 10)
 wtwt_df_new <- wtwt_df[complete.cases(wtwt_df), ]
 # Convert to matrix
 wtwt_matrix <- as.matrix(wtwt_df_new)
+wtwt_matrix
 # Create the retweet network
 retweet_network <- graph_from_edgelist(el = wtwt_matrix, directed = T)
 print.igraph(retweet_network)
 
 # Calculate out degree scores to find users who retweeted most
 out_degree <- degree(retweet_network, mode = c("out"))
-# Sort users in desc order of out deg scores
+#sort users in desc order of out deg scores
 out_deg_sorted <- sort(out_degree, decreasing = T)
 # View top 10 users
 out_deg_sorted[1:10]
@@ -140,13 +149,13 @@ out_deg_sorted[1:10]
 in_degree <- degree(retweet_network, mode = c("in"))
 # Sort users in desc order
 in_deg_sorted <- sort(in_degree, decreasing = T)
-# View top 10 users
+#view top 10 users
 in_deg_sorted[1:10]
 
 # Calculate betweeness
 # Nodes with higher betweeness have higher control over twitter network
 between_nw <- betweenness(retweet_network, directed = T)
-# Sort in order of desc betweeness scores
+#sort in order of desc betweeness scores
 between_nw_sort <- between_nw %>%
   sort(decreasing = T) %>%
   round()
@@ -174,21 +183,13 @@ plot(retweet_network, asp = 1,
 vertex_attr(retweet_network)
 
 # Extracting actual twitter text
-# Search for Australian tweets about lockdown, exclude retweets
-lock.twt <- search_tweets("lockdown", n = 18000, include_rts = F, lang = 'en',  result_type = "recent")
+# Search for tweets about lockdown, exclude retweets
+lock.twt <- search_tweets("lockdown", n = 18000, include_rts = F, lang = 'en')
+
+# Narrow down to Australian tweets
 lock.twt <- subset(lock.twt, location == "Australia" |
                         location %in% aus_cities$city |
-                        location %in% aus_cities$state)
-
-# Create data frame with just text, makes it easy to read twitter text
-woolies_tweets_text <- lock.twt$text
-head(woolies_tweets_text, 10)
-# Remove urls from text
-woolies_tweets_text_edit <- rm_twitter_url(woolies_tweets_text)
-head(woolies_tweets_text_edit, 10)
-# Remove special characters
-woolies_tweets_read <- gsub("[^A-Za-z]", " ", woolies_tweets_text_edit)
-head(woolies_tweets_read)
+                        location %in% aus_cities$admin_name)
 
 
 # Sentiment analysis(sa): Looks at sentiment of lockdown tweets
@@ -197,7 +198,9 @@ sa_value <- get_nrc_sentiment(lock.twt$text)
 sa_value[1:5, 1:7]
 # Calculate sum of scores
 sa_scores <- colSums(sa_value[,])
+# Convert to data frame
 sa_scores_df <- data.frame(sa_scores)
+# Create sentiment column in the dataframe
 sa_scores_final <- cbind(sentiment=row.names(sa_scores_df), 
                          sa_scores_df, row.names = NULL)
 # Plot the sentiment scores
