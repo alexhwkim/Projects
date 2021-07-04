@@ -11,6 +11,8 @@ Must enter Twitter API token credentials to run the code. The first few lines in
 
 Tweets with a desired key term are ingested and the user profiles of such tweeters are generated, then filtered for only Australian users. These two information tables are joined to make a final table with relevant tweets, then sorted in descending order of followers and following/followers ratio.
 Next, a table of top current trending tweet terms is generated, used to check if any related search terms related to the brand are trending.
+
+
 Note: The geocode of Australia was not used to filter, as only tweets with such specified latitude/longitude would appear. Instead, a csv of Australian cities and states were used to filter users, in junction with the 'result_type' parameter to find popular, newer or older tweets.
 
 
