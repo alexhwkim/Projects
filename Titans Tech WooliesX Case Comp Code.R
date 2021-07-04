@@ -86,8 +86,8 @@ ggplot(data = melt_df, aes(x = time, y = value, col = variable)) +
   geom_line(lwd = 0.8)
 
 
-# Filter data from above for only twitter users with over 10k followers
-woolies_tweets_best <- woolies_tweets[woolies_tweets$followers_count > 10000,]
+# Filter data from above for only twitter users with over 1k followers
+woolies_tweets_best <- woolies_tweets[woolies_tweets$followers_count > 1000,]
 
 # Create table of geographical locations of the tweets
 # Only within Australia
