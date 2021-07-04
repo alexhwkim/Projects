@@ -43,7 +43,7 @@ woolies_users <- users_data(woolies_tweets)
 woolies_users <- woolies_users %>%
   filter(woolies_users$account_created_at <= "2021-06-13")
 # Filter tweets that are from individuals from Australians cities/town 
-aus_cities <- read.csv("auscities.csv")
+aus_cities <- read.csv("australian_cities_list.csv")
 woolies_users <- subset(woolies_users, location == "Australia" |
                           location %in% aus_cities$city |
                           location %in% aus_cities$state)
